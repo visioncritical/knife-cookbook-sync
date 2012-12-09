@@ -7,7 +7,7 @@ production work with careful coordination with an external cookbook resolver.
 
 Here's the meat. `knife cookbook sync` vs `knife cookbook upload` with a
 pre-uploaded corpus of 39 cookbooks, using the standard unix `time` utility to
-benchmark on MRI 1.9.3-p327:
+benchmark on MRI 1.9.3-p327 and chef 10.16.2:
 
 * `knife cookbook sync -a`: 1.31s user 0.15s system 72% cpu **2.020 total**
 * `knife cookbook upload -a`: 1.34s user 0.15s system 15% cpu **9.684 total**
@@ -18,7 +18,7 @@ to be uploaded, and only uploads what's different.
 
 This means it **does not check versions and dependencies**. It cheats, so you
 should be sure you have your ducks in a row before uploading by using a
-cookbook resolver. This only matters for resolution purposes -- cookbooks
+cookbook resolver. This only matters for determining what to upload -- cookbooks
 uploaded with `knife cookbook sync` are no different otherwise (and in fact use
 chef's own cookbook uploading tooling to do it).
 
