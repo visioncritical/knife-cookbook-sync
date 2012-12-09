@@ -108,7 +108,7 @@ module Knife
                   ui.warn "dry run: would sync '#{cookbook}'"
                 end
               else
-                Chef::CookbookUploader.new(cl[cookbook], Chef::Config[:cookbook_path]).upload_cookbook
+                Chef::CookbookUploader.new(cl[cookbook], Chef::Config[:cookbook_path]).upload_cookbooks
               end
 
               uploaded = true
