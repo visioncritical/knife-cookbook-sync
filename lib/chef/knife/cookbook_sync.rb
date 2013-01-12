@@ -34,24 +34,24 @@ module Knife
       :default     => %w[cookbooks site-cookbooks],
       :description => "The path that cookbooks should be loaded from (path:path)",
       :proc        => proc { |x| x.split(":") }
-      
+
 
     def distill_manifest(cookbook)
       files = { }
       cookbook.manifest.values.select { |x| x.kind_of?(Array) }.flatten.each { |f| files[f['path']] = f['checksum'] }
       # don't check metadata.json since json output is indeterministic, metadata.rb should be all that's needed anw
-      files.delete('metadata.json') 
+      files.delete('metadata.json')
       return files
     end
 
     def sync_cookbooks(cookbooks, cl)
-      uploaded = false 
+      uploaded = false
 
       print_mutex = Mutex.new
 
       cookbooks.each do |cookbook|
         Thread.new do
-          upload = false 
+          upload = false
           print_mutex.synchronize do
             ui.msg "Checking cookbook '#{cookbook}' for sync necessity"
           end
@@ -93,13 +93,13 @@ module Knife
 
             begin
               #
-              # XXX 
+              # XXX
               #
               # For some godawful reason, if we use the local_cookbook referenced
               # above, the MD5 sums are off.
               #
               # So we reload the cookbooks here because it seems to work, with an
-              # optional retry if the chef server is being pissy. 
+              # optional retry if the chef server is being pissy.
               #
               cl = Chef::CookbookLoader.new(Chef::Config[:cookbook_path])
 
