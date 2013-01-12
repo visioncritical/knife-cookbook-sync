@@ -63,7 +63,7 @@ module Knife
       Chef::Log.level = :fatal
 
 
-      cookbooks.each do |cookbook|
+      cookbooks.map(&:to_s).each do |cookbook|
         Thread.new do
           upload = false
 
@@ -71,7 +71,8 @@ module Knife
             ui.msg "Checking cookbook '#{cookbook}' for sync necessity"
           end
 
-          remote_cookbook = Chef::CookbookVersion.load(cookbook.to_s)
+          remote_cookbook = Chef::CookbookVersion.available_versions(cookbook) &&
+            (Chef::CookbookVersion.load(cookbook.to_s) rescue nil)
           local_cookbook = cl[cookbook.to_s] rescue nil
 
           unless local_cookbook
