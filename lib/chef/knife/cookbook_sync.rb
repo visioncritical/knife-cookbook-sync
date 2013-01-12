@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-Thread.abort_on_exception = true
-
 module Knife
   class CookbookSync < Chef::Knife
 
@@ -136,6 +134,7 @@ module Knife
 
     def run
       Chef::Config[:cookbook_path] = config[:cookbook_path]
+      Thread.abort_on_exception = true
 
       Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest) }
 
