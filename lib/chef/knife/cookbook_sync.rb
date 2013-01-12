@@ -10,6 +10,7 @@ module Knife
       require 'chef/cookbook_loader'
       require 'chef/cookbook_uploader'
       require 'chef/cookbook_version'
+      require 'chef/log'
     end
 
     banner "knife cookbook sync [COOKBOOKS...]"
@@ -44,6 +45,10 @@ module Knife
 
     def sync_cookbooks(cookbooks, cl)
       uploaded = false
+      log_level = Chef::Log.level
+
+      # mutes the CookbookVersion noise when the cookbook doesn't exist on the server.
+      Chef::Log.level = :fatal
 
       print_mutex = Mutex.new
 
@@ -127,6 +132,7 @@ module Knife
       end
 
       Thread.list.reject { |x| x == Thread.current }.each(&:join)
+      Chef::Log.level = log_level # restore log level now that we're done checking
 
       # exit with an exit status of 5 if we've uploaded anything.
       exit uploaded ? 5 : 0
