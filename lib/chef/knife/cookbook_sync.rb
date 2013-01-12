@@ -30,7 +30,6 @@ module Knife
     option :cookbook_path,
       :short       => '-o [COOKBOOK PATH]',
       :long        => '--cookbook-path [COOKBOOK PATH]',
-      :default     => %w[cookbooks site-cookbooks],
       :description => "The path that cookbooks should be loaded from (path:path)",
       :proc        => proc { |x| x.split(":") }
 
@@ -139,9 +138,9 @@ module Knife
     end
 
     def run
-      Chef::Config[:cookbook_path] = config[:cookbook_path]
       Thread.abort_on_exception = true
 
+      Chef::Config[:cookbook_path] = config[:cookbook_path] if config[:cookbook_path]
       Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest) }
 
       cl = Chef::CookbookLoader.new(Chef::Config[:cookbook_path])
