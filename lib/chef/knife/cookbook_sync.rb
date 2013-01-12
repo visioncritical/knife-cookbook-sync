@@ -56,12 +56,12 @@ module Knife
     end
 
     def sync_cookbooks(cookbooks, cl)
-      uploaded = false
       log_level = Chef::Log.level
 
       # mutes the CookbookVersion noise when the cookbook doesn't exist on the server.
       Chef::Log.level = :fatal
 
+      to_upload = Queue.new
 
       cookbooks.map(&:to_s).each do |cookbook|
         Thread.new do
@@ -105,50 +105,21 @@ module Knife
               ui.msg "sync necessary; uploading '#{cookbook}'"
             end
 
-            retries_left = 5
-
-            begin
-              #
-              # XXX
-              #
-              # For some godawful reason, if we use the local_cookbook referenced
-              # above, the MD5 sums are off.
-              #
-              # So we reload the cookbooks here because it seems to work, with an
-              # optional retry if the chef server is being pissy.
-              #
-              cl = Chef::CookbookLoader.new(Chef::Config[:cookbook_path])
-
-              if config[:dry_run]
-                print_mutex.synchronize do
-                  ui.warn "dry run: would sync '#{cookbook}'"
-                end
-              else
-                Chef::CookbookUploader.new(cl[cookbook], Chef::Config[:cookbook_path]).upload_cookbooks
-              end
-
-              uploaded = true
-            rescue Exception => e
-              print_mutex.synchronize do
-                ui.error "Failed to upload; retrying up to #{retries_left} times"
-              end
-
-              retries_left -= 1
-              if retries_left > 0
-                retry
-              else
-                raise e
-              end
-            end
+            to_upload << cl[cookbook]
           end
         end
       end
 
-      Thread.list.reject { |x| x == Thread.current }.each(&:join)
+      Thread.list.reject { |x| x == Thread.current }.each(&:join) # wait for threads to settle
+
+      cookbooks_to_upload = []
+      loop { cookbooks_to_upload << to_upload.shift(true) } rescue nil
+
       Chef::Log.level = log_level # restore log level now that we're done checking
+      Chef::CookbookUploader.new(cookbooks_to_upload, Chef::Config[:cookbook_path]).upload_cookbooks
 
       # exit with an exit status of 5 if we've uploaded anything.
-      exit uploaded ? 5 : 0
+      exit cookbooks_to_upload.empty? ? 0 : 5
     end
 
     def run
