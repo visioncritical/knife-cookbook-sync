@@ -33,6 +33,19 @@ module Knife
       :description => "The path that cookbooks should be loaded from (path:path)",
       :proc        => proc { |x| x.split(":") }
 
+    option :quiet,
+      :short        => '-q',
+      :long         => '--quiet',
+      :description  => "Make less noise",
+      :default      => false
+
+    def make_noise(&block)
+      force_make_noise(&block) if block and !config[:quiet]
+    end
+
+    def force_make_noise(&block)
+      @print_mutex.synchronize(&block) if block
+    end
 
     def distill_manifest(cookbook)
       files = { }
@@ -49,12 +62,12 @@ module Knife
       # mutes the CookbookVersion noise when the cookbook doesn't exist on the server.
       Chef::Log.level = :fatal
 
-      print_mutex = Mutex.new
 
       cookbooks.each do |cookbook|
         Thread.new do
           upload = false
-          print_mutex.synchronize do
+
+          make_noise do
             ui.msg "Checking cookbook '#{cookbook}' for sync necessity"
           end
 
@@ -62,7 +75,7 @@ module Knife
           local_cookbook = cl[cookbook.to_s] rescue nil
 
           unless local_cookbook
-            print_mutex.synchronize do
+            make_noise do
               ui.fatal "Cookbook '#{cookbook}' does not exist locally."
             end
             exit 1
@@ -87,7 +100,7 @@ module Knife
           end
 
           if upload
-            print_mutex.synchronize do
+            make_noise do
               ui.msg "sync necessary; uploading '#{cookbook}'"
             end
 
@@ -140,7 +153,10 @@ module Knife
     def run
       Thread.abort_on_exception = true
 
+      @print_mutex = Mutex.new
+
       Chef::Config[:cookbook_path] = config[:cookbook_path] if config[:cookbook_path]
+
       Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest) }
 
       cl = Chef::CookbookLoader.new(Chef::Config[:cookbook_path])
