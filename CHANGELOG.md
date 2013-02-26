@@ -1,3 +1,8 @@
+0.0.3
+=====
+
+* Add chef-workflow support
+
 0.0.2
 =====
 * honor knife.rb configuration of cookbook path

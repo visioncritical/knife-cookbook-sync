@@ -63,7 +63,8 @@ For more information, use `knife cookbook sync --help`.
 We support [chef-workflow](https://github.com/chef-workflow/chef-workflow) by
 way of a task you can use.
 
-Just add this to your Rakefile:
+Add the 'knife_cookbook_sync' gem to your `Gemfile` (version `0.0.3` or later),
+and this to your `Rakefile`:
 
 ```ruby
 chef_workflow_task 'chef/cookbooks/sync'
