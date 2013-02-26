@@ -58,6 +58,19 @@ upload.
 
 For more information, use `knife cookbook sync --help`.
 
+## Chef-Workflow support
+
+We support [chef-workflow](https://github.com/chef-workflow/chef-workflow) by
+way of a task you can use.
+
+Just add this to your Rakefile:
+
+```ruby
+chef_workflow_task 'chef/cookbooks/sync'
+```
+
+And you'll have a `chef:cookbooks:sync` rake target you can use.
+
 ## Contributing
 
 1. Fork it
