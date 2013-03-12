@@ -1,3 +1,8 @@
+0.0.5
+=====
+
+* Deal with resolver bad behavior in a more appropriate way (abort).
+
 0.0.4
 =====
 
