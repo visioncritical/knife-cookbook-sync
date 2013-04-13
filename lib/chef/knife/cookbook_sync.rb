@@ -68,7 +68,7 @@ module Knife
 
       to_upload = Queue.new
 
-      cookbooks.map(&:to_s).each do |cookbook|
+      cookbooks.map(&:to_s).map do |cookbook|
         Thread.new do
           upload = false
 
@@ -113,9 +113,7 @@ module Knife
             to_upload << cl[cookbook]
           end
         end
-      end
-
-      Thread.list.reject { |x| x == Thread.current }.each(&:join) # wait for threads to settle
+      end.each(&:join)
 
       cookbooks_to_upload = []
       loop { cookbooks_to_upload << to_upload.shift(true) } rescue nil
