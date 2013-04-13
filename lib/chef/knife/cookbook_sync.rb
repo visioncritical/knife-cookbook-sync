@@ -137,6 +137,11 @@ module Knife
 
       Chef::Config[:cookbook_path] = config[:cookbook_path] if config[:cookbook_path]
 
+      if !Chef::Config[:cookbook_path] or Chef::Config[:cookbook_path].empty?
+        ui.msg "No cookbook path in config file or provided on command-line. Aborting."
+        exit 1
+      end
+
       Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest) }
 
       cl = Chef::CookbookLoader.new(Chef::Config[:cookbook_path])
@@ -147,6 +152,12 @@ module Knife
           names = cl.cookbook_names
         else
           names = cl.cookbooks.map(&:name)
+        end
+
+        if !names or names.empty?
+          ui.msg "No cookbooks found to upload in cookbook path: #{Chef::Config[:cookbook_path].inspect} -- not continuing"
+          ui.msg "Set cookbook_path in knife.rb or pass the -o option."
+          exit 1
         end
 
         sync_cookbooks names, cl
