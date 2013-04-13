@@ -1,3 +1,10 @@
+0.1.0 (04/13/2013)
+==================
+
+* Gem has been renamed -- is now `knife-cookbook-sync`.
+* Chef 11 now works, Chef 10 still works.
+* Clarified exit statuses for various behavior.
+
 0.0.5
 =====
 
