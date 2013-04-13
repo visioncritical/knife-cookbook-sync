@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["erik+github@hollensbe.org"]
   gem.description   = %q{Sync only what's changed -- faster than cookbook upload}
   gem.summary       = %q{Sync only what's changed -- faster than cookbook upload}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/erikh/knife-cookbook-sync"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
