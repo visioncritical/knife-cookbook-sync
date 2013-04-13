@@ -1,5 +1,9 @@
 # knife cookbook sync
 
+*Note*: this gem has been renamed to be more conformant with knife plugin
+naming on rubygems.org. The original gem was named
+[knife_cookbook_sync](https://rubygems.org/gems/knife_cookbook_sync).
+
 Sync your cookbooks faster than `knife cookbook upload` or alternatives.
 
 `knife cookbook sync` is primarily a development tool, but can be used for
@@ -27,17 +31,16 @@ decrease slowly towards `knife cookbook upload` performance. The gains are
 really only seen when you need to sync whole repositories where most or all of
 the product that's on-disk has already been uploaded. It's particularly nice
 for fast test cycles where you just don't want to care just yet what cookbooks
-have changed.
+have changed. However, you can use it for all uploading without any real issue.
 
-`knife cookbook sync` has no dependencies other than chef, and should be
-forward compatible with all versions of chef in the 10.x series, and probably
-beyond.
+`knife cookbook sync` has no dependencies other than chef, and is compatible
+with both chef 10.x and 11.x. 
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'knife_cookbook_sync'
+    gem 'knife-cookbook-sync'
 
 And then execute:
 
@@ -45,7 +48,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install knife_cookbook_sync
+    $ gem install knife-cookbook-sync
 
 ## Usage
 
@@ -63,7 +66,7 @@ For more information, use `knife cookbook sync --help`.
 We support [chef-workflow](https://github.com/chef-workflow/chef-workflow) by
 way of a task you can use.
 
-Add the 'knife_cookbook_sync' gem to your `Gemfile` (version `0.0.3` or later),
+Add the 'knife-cookbook-sync' gem to your `Gemfile` (version `0.1.0` or later),
 and this to your `Rakefile`:
 
 ```ruby
