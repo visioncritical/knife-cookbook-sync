@@ -59,7 +59,21 @@ to upload which is overridable by `-o`.
 If you pass `-d`, it'll perform a "dry run" and just show you what it would
 upload.
 
+See "Exit Statuses" below for information on how `knife cookbook sync` can let
+you know what it did (you know, for scripting yo).
+
 For more information, use `knife cookbook sync --help`.
+
+## Exit Statuses
+
+The following exit codes are used in various situations:
+
+* 0: nothing went wrong, but we did not see anything different. Works in dry run and sync mode.
+* 1: Something is not right -- usually this means you have a broken
+  `cookbook_path` or did not supply `-o`. Whereever Chef is sending its UI
+  output will have the information you seek (usually Standard Error).
+* 5: nothing went wrong, but there are differences between what's in your
+  `cookbook_path` and the chef server. Works in dry run and sync mode.
 
 ## Chef-Workflow support
 
