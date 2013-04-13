@@ -6,7 +6,12 @@ module Knife
     deps do
       require 'chef/knife/cookbook_metadata'
       require 'chef/rest'
-      require 'chef/checksum_cache'
+
+      begin
+        require 'chef/checksum_cache'
+      rescue LoadError
+      end
+
       require 'chef/cookbook_loader'
       require 'chef/cookbook_uploader'
       require 'chef/cookbook_version'
@@ -132,9 +137,16 @@ module Knife
       Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest) }
 
       cl = Chef::CookbookLoader.new(Chef::Config[:cookbook_path])
+      cl.load_cookbooks if cl.respond_to?(:load_cookbooks)
 
       if config[:all]
-        sync_cookbooks cl.cookbooks.map(&:name), cl
+        if cl.respond_to?(:cookbook_names)
+          names = cl.cookbook_names
+        else
+          names = cl.cookbooks.map(&:name)
+        end
+
+        sync_cookbooks names, cl
       else
         sync_cookbooks name_args, cl
       end
