@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'knife_cookbook_sync/version'
+require 'knife-cookbook-sync/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = "knife_cookbook_sync"
+  gem.name          = "knife-cookbook-sync"
   gem.version       = KnifeCookbookSync::VERSION
   gem.authors       = ["Erik Hollensbe"]
   gem.email         = ["erik+github@hollensbe.org"]

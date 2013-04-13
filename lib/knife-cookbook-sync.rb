@@ -1,4 +1,4 @@
-require "knife_cookbook_sync/version"
+require "knife-cookbook-sync/version"
 
 module KnifeCookbookSync
 end
