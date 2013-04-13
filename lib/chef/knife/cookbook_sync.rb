@@ -120,11 +120,16 @@ module Knife
       cookbooks_to_upload = []
       loop { cookbooks_to_upload << to_upload.shift(true) } rescue nil
 
+      # exit 0 if there's nothing to upload
+      if cookbooks_to_upload.empty?
+        exit 0
+      end
+
       Chef::Log.level = log_level # restore log level now that we're done checking
       Chef::CookbookUploader.new(cookbooks_to_upload, Chef::Config[:cookbook_path]).upload_cookbooks
 
       # exit with an exit status of 5 if we've uploaded anything.
-      exit cookbooks_to_upload.empty? ? 0 : 5
+      exit 5
     end
 
     def run
