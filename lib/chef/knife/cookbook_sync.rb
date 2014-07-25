@@ -105,12 +105,16 @@ module Knife
             end
           end
 
-          if upload
+          if upload and !config[:dry_run]
             make_noise do
               ui.msg "sync necessary; uploading '#{cookbook}'"
             end
 
             to_upload << cl[cookbook]
+          else
+            make_noise do
+              ui.msg "sync necessary; skipping upload of '#{cookbook}' due to dry_run flag"
+	    end
           end
         end
       end.each(&:join)
