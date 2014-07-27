@@ -44,8 +44,18 @@ module Knife
       :description  => "Make less noise",
       :default      => false
 
+    option :pipeline,
+      :short	    => '-g',
+      :long         => '--go_pipeline',
+      :description  => "Make low noise",
+      :default      => false
+
+    def make_noise_ci(&block)
+      force_make_noise(&block) if block and config[:pipeline]
+    end
+
     def make_noise(&block)
-      force_make_noise(&block) if block and !config[:quiet]
+      force_make_noise(&block) if block and !config[:quiet] and !config[:pipeline]
     end
 
     def force_make_noise(&block)
@@ -108,10 +118,16 @@ module Knife
             make_noise do
               ui.msg "sync necessary; uploading '#{cookbook}'"
             end
+            make_noise_ci do
+              ui.msg "#{cookbook} - Updated"
+	    end
             to_upload << cl[cookbook]
           elsif upload
             make_noise do
               ui.msg "sync necessary; skipping upload of '#{cookbook}' due to dry_run flag"
+	    end
+            make_noise_ci do
+              ui.msg cookbook
 	    end
           else
             make_noise do
