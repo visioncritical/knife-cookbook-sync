@@ -49,6 +49,11 @@ module Knife
       :long         => '--go_pipeline',
       :description  => "Make low noise",
       :default      => false
+    option :metaskip
+      :short        => '-m',
+      :long         => '--skip-meta',
+      :description  => 'Skip metadata.rb too',
+      :default      => false
 
     def make_noise_ci(&block)
       force_make_noise(&block) if block and config[:pipeline]
@@ -67,6 +72,8 @@ module Knife
       cookbook.manifest.values.select { |x| x.kind_of?(Array) }.flatten.each { |f| files[f['path']] = f['checksum'] }
       # don't check metadata.json since json output is indeterministic, metadata.rb should be all that's needed anw
       files.delete('metadata.json')
+      # Trying to delete metadata.rb too
+      files.delete('metadata.rb') if config[:metaskip]
       return files
     end
 
