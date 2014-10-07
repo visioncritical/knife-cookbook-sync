@@ -49,7 +49,8 @@ module Knife
       :long         => '--go_pipeline',
       :description  => "Make low noise",
       :default      => false
-    option :metaskip
+
+    option :metaskip,
       :short        => '-m',
       :long         => '--skip-meta',
       :description  => 'Skip metadata.rb too',
